@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Application</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #172033;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 35px auto;
+            background: white;
+            padding: 28px;
+            border-radius: 15px;
+            box-shadow: 0 3px 15px #1720330c;
+        }
+
+        h1 { margin-top: 0; }
+
+        .subtitle { color: #64748b; margin-bottom: 25px; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8deea;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button, .btn {
+            display: inline-block;
+            padding: 12px 17px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .primary { background: #2563eb; color: white; }
+        .secondary { background: #e8eef9; color: #1e40af; }
+
+        .actions { display: flex; gap: 10px; margin-top: 25px; }
+
+        .message {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 500px) {
+            body { padding: 12px; }
+            .container { padding: 18px; }
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <h1>Edit Job Application</h1>
+    <p class="subtitle">Update the application details below.</p>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <div class="form-grid">
+            <div>
+                <label>Company Name *</label>
+                <input type="text" name="company"
+                       value="{{ application.company }}" required>
+            </div>
+
+            <div>
+                <label>Job Role *</label>
+                <input type="text" name="role"
+                       value="{{ application.role }}" required>
+            </div>
+
+            <div>
+                <label>Application Date *</label>
+                <input type="date" name="applied_date"
+                       value="{{ application.applied_date }}" required>
+            </div>
+
+            <div>
+                <label>Status *</label>
+                <select name="status" required>
+                    {% for status in statuses %}
+                        <option value="{{ status }}"
+                            {% if application.status == status %}selected{% endif %}>
+                            {{ status }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label>Interview Date</label>
+                <input type="date" name="interview_date"
+                       value="{{ application.interview_date or '' }}">
+            </div>
+
+            <div>
+                <label>Salary Package (LPA)</label>
+                <input type="number" name="salary_package" min="0" step="0.01"
+                       value="{{ application.salary_package if application.salary_package is not none else '' }}"
+                       placeholder="e.g. 4.5">
+            </div>
+
+            <div>
+                <label>Company Website</label>
+                <input type="url" name="company_website"
+                       value="{{ application.company_website or '' }}"
+                       placeholder="https://example.com">
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="primary" type="submit">Save Changes</button>
+            <a class="btn secondary" href="{{ url_for('home') }}">Cancel</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>
